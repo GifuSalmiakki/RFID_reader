@@ -38,7 +38,7 @@ class RFIDReader():
             return False
 
         for loop_id in self.boards:
-            GPIO.output(self.boards[loop_id], loop_id == rid)
+            GPIO.output(self.boards[loop_id], loop_id == readerID)
         return True
 
     def read(self, readerID):
