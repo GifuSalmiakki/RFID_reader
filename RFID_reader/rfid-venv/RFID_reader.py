@@ -37,8 +37,8 @@ class RFIDReader():
             print("Reader ID" + readerID + " not found")
             return False
 
-        for loop_id in self.boards:
-            GPIO.output(self.boards[loop_id], loop_id == readerID)
+        for id in self.boards:
+            GPIO.output(self.boards[id], id == readerID)
         return True
 
     def read(self, readerID):
@@ -64,7 +64,7 @@ def main():
     while not cardsInPlace:
         for r in readers:
             try:
-                cardID, cardData = rfidReader.read(r[0])
+                cardID = rfidReader.read(r[0])
                 # card was read, set corresponding value to True
                 if cardID != None:
                     cardsRead[r] = True
