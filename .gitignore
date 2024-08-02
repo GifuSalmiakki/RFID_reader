@@ -1,7 +1,0 @@
-*.o
-*lib*
-*.conf
-*.cnf
-*.idea
-*bin/*
-
