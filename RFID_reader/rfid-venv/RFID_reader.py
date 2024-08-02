@@ -41,6 +41,15 @@ class RFIDReader():
             GPIO.output(self.boards[loop_id], loop_id == rid)
         return True
 
+    def read(self, readerID):
+        if not self.selectBoard(readerID):
+            return None
+
+        self.reinit()
+        cardID, cardData = self.reader.read_no_block()
+        self.close()
+        return cardID
+
 def main():
     # refer to pins by "GPIO"-numbers on the board
     GPIO.setmode(GPIO.BCM)
