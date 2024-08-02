@@ -6,7 +6,7 @@ import signal
 # storing if cards have been read,
 # since that's the only thing we're concerned with
 cardsRead = {}
-CARD_AMOUNT = 2
+CARD_AMOUNT = 1
 for card in range(CARD_AMOUNT):
     cardsRead[card] = False
 
@@ -14,7 +14,14 @@ class RFIDReader():
 
     def __init__(self):
         self.reader = SimpleMFRC522()
-    def addBoard(self, readerID, pin):
+    def read(self, readerID):
+        if not self.selectBoard(readerID):
+            return None
+        cardID = self.reader.read()
+        self.close()
+        return cardID
+
+''''' def addBoard(self, readerID, pin):
         self.boards[readerID] = pin
         GPIO.setup(pin, GPIO.OUT)
         print(pin)
@@ -27,20 +34,14 @@ class RFIDReader():
         for id in self.boards:
             GPIO.output(self.boards[id], id == readerID)
         return True
+ '''
 
-    def read(self, readerID):
-        if not self.selectBoard(readerID):
-            return None
-        cardID, cardData = self.reader.read()
-        self.close()
-        return cardID
 
 def main():
     # refer to pins by "GPIO"-numbers on the board
     GPIO.setmode(GPIO.BCM)
     rfidReader = RFIDReader()
-    readers = [("reader1", 5),
-               ("reader2", 6)]
+    readers = [("reader1", 25)]
     for r in readers:
         RFIDReader.addBoard(r[0], r[1])
 
@@ -57,7 +58,7 @@ def main():
                 print("Execption: "+ exception)
 
         # all cards read on one pass, all cards in place
-        if cardsRead[0] == cardsRead[1] == True:
+        if cardsRead[0] == True:
             print("All cards in place :)")
             cardsInPlace = True
 
