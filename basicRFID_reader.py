@@ -9,49 +9,21 @@ from itertools import groupby
 # since that's the only thing we're concerned with
 cardsRead = {}
 CARD_AMOUNT = 1
-GPIO_READER1 = 25
-GPIO_READER2 = 24
+GPIO_READER1 = 5
+GPIO_READER2 = 6
 readers = [("reader1", GPIO_READER1), ("reader2", GPIO_READER2)]
 
 for card in range(CARD_AMOUNT-1):
     cardsRead[card] = False
 
 class RFIDReader():
-    def __init__(self, bus=0, device=0, spd=1000000) -> Self:
+
+    def __init__(self) -> Self:
         self.reader = SimpleMFRC522()
-        self.close()
-        self.bus
-        self.boards = {}
-
-        self.bus = bus
-        self.device = device
-        self.spd = spd
-    def reinit(self) -> Self:
-        self.reader.READER.spi = spidev.SpiDev()
-        self.reader.READER.spi.open(self.bus, self.device)
-        self.reader.READER.spi.max_speed_hz = self.spd
-        self.reader.READER.MFRC522_Init()
-
-    def close(self) -> Self:
-        self.reader.READER.spi.close()
 
     def readCard(self, readerID) -> Self:
         cardID, data = self.reader.read()
         return cardID
-
-    def addBoard(self, readerID, pin) -> Self:
-        self.boards[readerID] = pin
-        GPIO.setup(pin, GPIO.OUT)
-        print(pin)
-
-    def selectBoard(self, readerID) -> Self:
-        if not readerID in self.boards:
-            print("Reader ID" + readerID + " not found")
-            return False
-
-        for id in self.boards:
-            GPIO.output(self.boards[id], id == readerID)
-        return True
 
 def main():
     # refer to pins by "GPIO"-numbers on the board
