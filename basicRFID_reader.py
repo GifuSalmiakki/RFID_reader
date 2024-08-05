@@ -3,6 +3,7 @@ from mfrc522 import SimpleMFRC522
 import spidev
 import signal
 from typing import Self
+from itertools import groupby
 
 # storing if cards have been read,
 # since that's the only thing we're concerned with
@@ -11,7 +12,7 @@ CARD_AMOUNT = 1
 GPIO_READER1 = 25
 readers = [("reader1", GPIO_READER1)]
 
-for card in range(CARD_AMOUNT):
+for card in range(CARD_AMOUNT-1):
     cardsRead[card] = False
 
 class RFIDReader():
@@ -34,14 +35,15 @@ def main():
         for r in readers:
             try:
                 cardID = rfidReader.readCard(r[0])
-                print("Card "+cardID+" read")
+                print("Card "+str(cardID)+" read")
                 # card was read, set corresponding value to True
                 cardsRead[r] = True
             except Exception as exception:
                 print("Execption: "+ str(exception))
 
             # all cards read on one pass, all cards in place
-        if cardsRead[0] == True:
+        values = groupby(cardsRead.values())
+        if all(value == True for value in values):
             print("All cards in place :)")
             cardsInPlace = True
 
