@@ -6,7 +6,10 @@ import signal
 # storing if cards have been read,
 # since that's the only thing we're concerned with
 cardsRead = {}
-CARD_AMOUNT = 2
+CARD_AMOUNT = 1
+GPIO_READER1 = 25
+readers = [("reader1", GPIO_READER1)]
+
 for card in range(CARD_AMOUNT):
     cardsRead[card] = False
 
@@ -54,10 +57,9 @@ def main():
     # refer to pins by "GPIO"-numbers on the board
     GPIO.setmode(GPIO.BCM)
     rfidReader = RFIDReader()
-    readers = [("reader1", 5),
-               ("reader2", 6)]
+
     for r in readers:
-        RFIDReader.addBoard(r[0], r[1])
+        RFIDReader.addBoard(RFIDReader, r[0], r[1])
 
     cardsInPlace = False
     # reading each reader one at a time
@@ -72,7 +74,7 @@ def main():
                 print("Execption: "+ exception)
 
         # all cards read on one pass, all cards in place
-        if cardsRead[0] == cardsRead[1] == True:
+        if cardsRead[0] == True:
             print("All cards in place :)")
             cardsInPlace = True
 
