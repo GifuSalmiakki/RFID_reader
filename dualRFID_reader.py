@@ -22,9 +22,6 @@ class RFIDReader():
         self.reader = SimpleMFRC522()
         self.boards = {}
 
-    def close(self) -> Self:
-        self.reader.READER.spi.close()
-
     def readCard(self, readerID) -> Self:
         if not self.selectBoard(readerID):
             return None
@@ -33,16 +30,14 @@ class RFIDReader():
 
     def addBoard(self, readerID, pin) -> Self:
         self.boards[readerID] = pin
-        GPIO.setup(pin, GPIO.OUT)
-        print(str(readerID+pin))
+        print(str(readerID))
 
     def selectBoard(self, readerID) -> Self:
         if not readerID in self.boards:
             print("Reader ID" + str(readerID) + " not found")
             return False
-
         for id in self.boards:
-            GPIO.output(self.boards[id], id == readerID)
+            GPIO.input(self.boards[id], id == readerID)
         return True
 
 def main():
