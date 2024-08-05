@@ -36,8 +36,7 @@ def main():
                 cardID = rfidReader.readCard(r[0])
                 print("Card "+cardID+" read")
                 # card was read, set corresponding value to True
-                if cardID != None:
-                    cardsRead[r] = True
+                cardsRead[r] = True
             except Exception as exception:
                 print("Execption: "+ str(exception))
 
