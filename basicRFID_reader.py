@@ -20,7 +20,7 @@ class RFIDReader():
         self.reader = SimpleMFRC522()
 
     def readCard(self, readerID) -> Self:
-        cardID = str(self.reader.read())
+        cardID, data = self.reader.read()
         return cardID
 
 def main():
@@ -41,9 +41,9 @@ def main():
                 print("Execption: "+ str(exception))
 
             # all cards read on one pass, all cards in place
-            if cardsRead[0] == True:
-                print("All cards in place :)")
-                cardsInPlace = True
+        if cardsRead[0] == True:
+            print("All cards in place :)")
+            cardsInPlace = True
 
     GPIO.cleanup()
 
