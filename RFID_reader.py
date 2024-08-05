@@ -1,5 +1,5 @@
 import RPi.GPIO as GPIO
-from mfrc522 import MFRC522
+from mfrc522 import SimpleMFRC522
 import spidev
 import signal
 
@@ -16,12 +16,17 @@ for card in range(CARD_AMOUNT):
 class RFIDReader():
 
     def __init__(self, bus=0, device=0, spd=1000000):
-        self.reader = MFRC522()
-        self.spi = spidev.SpiDev()
-        self.spi.open(bus, device)
-        self.spi.max_speed_hz = spd
+        self.reader = SimpleMFRC522()
+        self.close()
+        self.bus
+        self.boards = {}
 
-    def reinit(self):
+        self.bus = bus
+        self.device = device
+        self.spd = spd
+
+
+def reinit(self):
         self.reader.READER.spi = spidev.SpiDev()
         self.reader.READER.spi.open(self.bus, self.device)
         self.reader.READER.spi.max_speed_hz = self.spd

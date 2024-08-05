@@ -18,7 +18,6 @@ class RFIDReader():
     def __init__(self):
         self.reader = SimpleMFRC522()
         self.boards = {}
-
     def read(self, readerID):
         if not self.selectBoard(readerID):
             return None
