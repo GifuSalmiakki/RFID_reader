@@ -20,8 +20,8 @@ class RFIDReader():
         self.boards = {}
 
     def read(self, readerID):
-        if not self.selectBoard(readerID):
-            return None
+        #if not self.selectBoard(readerID):
+            #return None
         cardID = self.reader.read()
         self.close()
         return cardID
