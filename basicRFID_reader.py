@@ -9,47 +9,50 @@ cardsRead = {}
 CARD_AMOUNT = 1
 GPIO_READER1 = 25
 readers = [("reader1", GPIO_READER1)]
-boards = {}
 
 for card in range(CARD_AMOUNT):
     cardsRead[card] = False
 
-reader = SimpleMFRC522
-def selectBoard(readerID):
-    if not readerID in boards:
-        print("Reader ID" + readerID + " not found")
-        return False
-    for id in boards:
-        GPIO.output(boards[id], id == readerID)
-    return True
+class RFIDReader():
 
-def read(readerID):
-    if not selectBoard(readerID):
-        return None
-    cardID, data = reader.read()
-    return cardID
+    def __init__(self) -> Self:
+        self.reader = SimpleMFRC5223()
+        self.boards = {}
 
-def addBoard(readerID, pin):
-    boards[readerID] = pin
-    GPIO.setup(pin, GPIO.OUT)
-    print("Reader connected to pin: " +str(pin))
-    return
+    def read(self, readerID) -> Self:
+        if not self.selectBoard(readerID):
+            return None
+        cardID, data = self.reader.read()
+        return cardID
 
+    def addBoard(self, readerID, pin) -> Self:
+        self.boards[readerID] = pin
+        GPIO.setup(pin, GPIO.OUT)
+        print("Reader connected to pin: " +str(pin))
+        return
 
+    def selectBoard(self, readerID) -> Self:
+        if not readerID in self.boards:
+            print("Reader ID" + readerID + " not found")
+            return False
+        for id in self.boards:
+            GPIO.output(self.boards[id], id == readerID)
+        return True
 
 def main():
     # refer to pins by "GPIO"-numbers on the board
     GPIO.setmode(GPIO.BCM)
+    rfidReader = RFIDReader()
     cardsInPlace = False
 
     for r in readers:
-        reader.addBoard(r[0], r[1])
+        RFIDReader.addBoard(RFIDReader, r[0], r[1])
 
     # reading each reader one at a time
     while not cardsInPlace:
         for r in readers:
             try:
-                cardID = reader.read(r[0])
+                cardID = rfidReader.reader
                 print("Card "+cardID+" read")
                 # card was read, set corresponding value to True
                 if cardID != None:
