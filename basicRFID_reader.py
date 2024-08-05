@@ -18,14 +18,16 @@ class RFIDReader():
     def __init__(self):
         self.reader = SimpleMFRC522()
         self.boards = {}
+
     def read(self, readerID):
         if not self.selectBoard(readerID):
             return None
         cardID = self.reader.read()
         self.close()
         return cardID
-
+'''''
     def addBoard(self, readerID, pin):
+
         self.boards[readerID] = pin
         GPIO.setup(pin, GPIO.OUT)
         print("Reader connected to pin: " +pin)
@@ -37,17 +39,12 @@ class RFIDReader():
         for id in self.boards:
             GPIO.output(self.boards[id], id == readerID)
         return True
-
+'''
 def main():
     # refer to pins by "GPIO"-numbers on the board
     GPIO.setmode(GPIO.BCM)
     rfidReader = RFIDReader()
-
-    for r in readers:
-        print(r[0])
-        print(r[1])
-        RFIDReader.addBoard(RFIDReader, r[0], r[1])
-
+    GPIO.setup(GPIO_READER1, GPIO.OUT)
     cardsInPlace = False
     # reading each reader one at a time
     while not cardsInPlace:
