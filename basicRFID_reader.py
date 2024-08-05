@@ -55,7 +55,7 @@ def main():
                 if cardID != None:
                     cardsRead[r] = True
             except Exception as exception:
-                print("Execption: "+ exception)
+                print("Execption: "+ str(exception))
 
         # all cards read on one pass, all cards in place
         if cardsRead[0] == True:
