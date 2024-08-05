@@ -3,13 +3,16 @@ from mfrc522 import SimpleMFRC522
 import spidev
 from typing import Self
 from itertools import groupby
+import time
 
 # storing if cards have been read,
 # since that's the only thing we're concerned with
 cardsRead = {}
 CARD_AMOUNT = 1
 GPIO_READER1 = 25
-readers = [("reader1", GPIO_READER1)]
+GPIO_READER2 = 24
+readers = [("reader1", GPIO_READER1), ("reader2", GPIO_READER2)]
+
 
 for card in range(CARD_AMOUNT):
     cardsRead[card] = False
@@ -17,17 +20,7 @@ for card in range(CARD_AMOUNT):
 class RFIDReader():
     def __init__(self, bus=0, device=0, spd=1000000) -> Self:
         self.reader = SimpleMFRC522()
-        self.close()
         self.boards = {}
-
-        self.bus = bus
-        self.device = device
-        self.spd = spd
-    def reinit(self) -> Self:
-        self.reader.READER.spi = spidev.SpiDev()
-        self.reader.READER.spi.open(self.bus, self.device)
-        self.reader.READER.spi.max_speed_hz = self.spd
-        self.reader.READER.MFRC522_Init()
 
     def close(self) -> Self:
         self.reader.READER.spi.close()
@@ -35,15 +28,13 @@ class RFIDReader():
     def readCard(self, readerID) -> Self:
         if not self.selectBoard(readerID):
             return None
-        self.reinit()
-        cardID, data = self.reader.read_no_block()
-        self.close()
+        cardID, data = self.reader.read()
         return cardID
 
     def addBoard(self, readerID, pin) -> Self:
         self.boards[readerID] = pin
         GPIO.setup(pin, GPIO.OUT)
-        print(str(readerID, pin))
+        print(str(readerID+pin))
 
     def selectBoard(self, readerID) -> Self:
         if not readerID in self.boards:
@@ -57,6 +48,7 @@ class RFIDReader():
 def main():
     # refer to pins by "GPIO"-numbers on the board
     GPIO.setmode(GPIO.BCM)
+    GPIO.setwarnings(False)
     rfidReader = RFIDReader()
     cardsInPlace = False
 
@@ -68,9 +60,10 @@ def main():
         for r in readers:
             try:
                 cardID = rfidReader.readCard(r[0])
-                print("Card "+str(cardID)+" read")
-                # card was read, set corresponding value to True
-                cardsRead[r] = True
+                if cardID != None:
+                    print("Card "+str(cardID)+" read")
+                    # card was read, set corresponding value to True
+                    cardsRead[r] = True
             except Exception as exception:
                 print("Execption: "+ str(exception))
 
@@ -79,6 +72,8 @@ def main():
         if all(value == True for value in values):
             print("All cards in place :)")
             cardsInPlace = True
+
+        time.sleep(1)
 
     GPIO.cleanup()
 
