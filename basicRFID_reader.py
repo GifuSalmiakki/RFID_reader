@@ -41,10 +41,10 @@ def main():
             except Exception as exception:
                 print("Execption: "+ str(exception))
 
-        # all cards read on one pass, all cards in place
-        if cardsRead[0] == True:
-            print("All cards in place :)")
-            cardsInPlace = True
+            # all cards read on one pass, all cards in place
+            if cardsRead[0] == True:
+                print("All cards in place :)")
+                cardsInPlace = True
 
     GPIO.cleanup()
 
