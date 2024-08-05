@@ -20,7 +20,7 @@ class RFIDReader():
         self.reader = SimpleMFRC522()
 
     def readCard(self, readerID) -> Self:
-        cardID, data = self.reader.read()
+        cardID = str(self.reader.read())
         return cardID
 
 def main():
