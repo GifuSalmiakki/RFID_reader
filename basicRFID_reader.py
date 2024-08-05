@@ -40,9 +40,6 @@ def main():
     rfidReader = RFIDReader()
     cardsInPlace = False
 
-    for r in readers:
-        RFIDReader.addBoard(r[0], r[1])
-
     # reading each reader one at a time
     while not cardsInPlace:
         for r in readers:
