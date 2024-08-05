@@ -26,7 +26,7 @@ class RFIDReader():
         self.spd = spd
 
 
-def reinit(self):
+    def reinit(self):
         self.reader.READER.spi = spidev.SpiDev()
         self.reader.READER.spi.open(self.bus, self.device)
         self.reader.READER.spi.max_speed_hz = self.spd
