@@ -10,7 +10,6 @@ CARD_AMOUNT = 1
 GPIO_READER1 = 25
 readers = [("reader1", GPIO_READER1)]
 
-
 for card in range(CARD_AMOUNT):
     cardsRead[card] = False
 
@@ -19,6 +18,7 @@ class RFIDReader():
     def __init__(self):
         self.reader = SimpleMFRC522()
         self.boards = {}
+
     def read(self, readerID):
         if not self.selectBoard(readerID):
             return None
@@ -29,7 +29,7 @@ class RFIDReader():
     def addBoard(self, readerID, pin):
         self.boards[readerID] = pin
         GPIO.setup(pin, GPIO.OUT)
-        print(pin)
+        print("Reader connected to pin: " +pin)
 
     def selectBoard(self, readerID):
         if not readerID in self.boards:
