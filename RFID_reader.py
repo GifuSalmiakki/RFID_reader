@@ -25,7 +25,6 @@ class RFIDReader():
         self.device = device
         self.spd = spd
 
-
     def reinit(self):
         self.reader.READER.spi = spidev.SpiDev()
         self.reader.READER.spi.open(self.bus, self.device)
