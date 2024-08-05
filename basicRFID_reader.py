@@ -20,19 +20,8 @@ class RFIDReader():
         self.reader = SimpleMFRC522()
 
     def readCard(self, readerID) -> Self:
-        if not self.selectBoard(readerID):
-            return None
         cardID, data = self.reader.read()
         return cardID
-
-    def addBoard(self,  pin) -> Self:
-        GPIO.setup(pin, GPIO.OUT)
-        print("Reader connected to pin: " +str(pin))
-        return
-
-    def selectBoard(self, readerID) -> Self:
-        GPIO.output(self.boards[id], id == readerID)
-        return True
 
 def main():
     # refer to pins by "GPIO"-numbers on the board
