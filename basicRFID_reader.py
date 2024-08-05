@@ -9,9 +9,8 @@ from itertools import groupby
 # since that's the only thing we're concerned with
 cardsRead = {}
 CARD_AMOUNT = 1
-GPIO_READER1 = 5
-GPIO_READER2 = 6
-readers = [("reader1", GPIO_READER1), ("reader2", GPIO_READER2)]
+GPIO_READER1 = 25
+readers = [("reader1", GPIO_READER1)]
 
 for card in range(CARD_AMOUNT-1):
     cardsRead[card] = False
