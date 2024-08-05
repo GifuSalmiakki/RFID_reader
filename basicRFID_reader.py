@@ -14,23 +14,23 @@ boards = {}
 for card in range(CARD_AMOUNT):
     cardsRead[card] = False
 
+
 class RFIDReader():
 
     def __init__(self):
-        self.reader = SimpleMFRC522()
-        self.boards = {}
+        self.reader = SimpleMFRC522
 
     def read(self, readerID):
         if not self.selectBoard(readerID):
-            #return None
-        cardID = self.reader.read()
+            return None
+        cardID, data = self.reader.read()
         return cardID
 
     def addBoard(self, readerID, pin):
-
         boards[readerID] = pin
         GPIO.setup(pin, GPIO.OUT)
         print("Reader connected to pin: " +pin)
+        return
 
     def selectBoard(self, readerID):
         if not readerID in boards:
@@ -46,11 +46,15 @@ def main():
     rfidReader = RFIDReader()
     cardsInPlace = False
 
+    for r in readers:
+        RFIDReader.addBoard(RFIDReader, r[0], r[1])
+
     # reading each reader one at a time
     while not cardsInPlace:
         for r in readers:
             try:
                 cardID = rfidReader.read(r[0])
+                print("Card "+cardID+" read")
                 # card was read, set corresponding value to True
                 if cardID != None:
                     cardsRead[r] = True
