@@ -9,8 +9,8 @@ import time
 # since that's the only thing we're concerned with
 cardsRead = {}
 CARD_AMOUNT = 1
-GPIO_READER1 = 7 # CE1
-GPIO_READER2 = 8 # CE0
+GPIO_READER1 = 23
+GPIO_READER2 = 24
 readers = [("reader1", GPIO_READER1), ("reader2", GPIO_READER2)]
 
 
@@ -18,39 +18,45 @@ for card in range(CARD_AMOUNT):
     cardsRead[card] = False
 
 class RFIDReader():
-    def __init__(self) -> Self:
+    def __init__(self, bus=0, device=0, spd=1000000) -> Self:
         self.reader = SimpleMFRC522()
+        self.close()
         self.boards = {}
-        #self.reader.READER.spi.no_cs = True
-    #def reinit(self):
-        #self.reader.READER.spi = spidev.SpiDev()
-        #self.reader.READER.spi.open(0, 0)
-        #self.reader.READER.spi.max_speed_hz = 1000000
-        #self.reader.MFRC522_Init()
 
-    #def close(self):
-        #self.reader.READER.spi.close()
+        self.bus = bus
+        self.device = device
+        self.spd = spd
 
-    def readCard(self, readerID) -> Self:
-        if not self.selectBoard(readerID):
-            return None
-        else:
-            GPIO.setup(self.boards[readerID], GPIO.IN)
-        cardID, data = self.reader.read()
-        return cardID
+    def reinit(self) -> Self:
+        self.reader.READER.spi = spidev.SpiDev()
+        self.reader.READER.spi.open(self.bus, self.device)
+        self.reader.READER.spi.max_speed_hz = self.spd
+        self.reader.READER.MFRC522_Init()
+
+    def close(self) -> Self:
+        self.reader.READER.spi.close()
 
     def addBoard(self, readerID, pin) -> Self:
         self.boards[readerID] = pin
-        GPIO.setup(pin, GPIO.OUT)
-        print(str(readerID))
 
     def selectBoard(self, readerID) -> Self:
         if not readerID in self.boards:
-            print("Reader ID" + str(readerID) + " not found")
+            print("readerid " + readerID + " not found")
             return False
-        for id in self.boards:
-            GPIO.input(self.boards[id], id == readerID)
+
+        for loop_id in self.boards:
+            GPIO.output(self.boards[loop_id], loop_id == readerID)
         return True
+
+    def read(self, readerID) -> Self:
+        if not self.selectBoard(readerID):
+            return None
+
+        self.reinit()
+        cardID, data = self.reader.read_no_block()
+        self.close()
+
+        return cardID
 
 def main():
     # refer to pins by "GPIO"-numbers on the board
@@ -66,8 +72,7 @@ def main():
     while not cardsInPlace:
         for r in readers:
             try:
-                GPIO.setup(r[1], GPIO.IN)
-                cardID = rfidReader.readCard(r[0])
+                cardID = rfidReader.read(r[0])
                 if cardID != None:
                     print("Card "+str(cardID)+" read")
                     # card was read, set corresponding value to True
