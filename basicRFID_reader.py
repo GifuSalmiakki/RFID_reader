@@ -38,8 +38,8 @@ def main():
                 print("Card "+str(cardID)+" read")
                 # card was read, set corresponding value to True
                 cardsRead[r] = True
-            except Exception as exception:
-                print("Execption: "+ str(exception))
+            except KeyboardInterrupt:
+                GPIO.cleanup()
 
             # all cards read on one pass, all cards in place
         values = groupby(cardsRead.values())
