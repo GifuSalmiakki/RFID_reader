@@ -13,24 +13,23 @@ GPIO_READER1 = 23
 GPIO_READER2 = 24
 readers = [("reader1", GPIO_READER1), ("reader2", GPIO_READER2)]
 
-
 for card in range(CARD_AMOUNT):
     cardsRead[card] = False
 
 class RFIDReader():
-    def __init__(self, bus=0, device=0, spd=1000000) -> Self:
+    def __init__(self, bus=0, device=0, speed=1000000) -> Self:
         self.reader = SimpleMFRC522()
         self.close()
         self.boards = {}
 
         self.bus = bus
         self.device = device
-        self.spd = spd
+        self.speed = speed
 
     def reinit(self) -> Self:
         self.reader.READER.spi = spidev.SpiDev()
         self.reader.READER.spi.open(self.bus, self.device)
-        self.reader.READER.spi.max_speed_hz = self.spd
+        self.reader.READER.spi.max_speed_hz = self.speed
         self.reader.READER.MFRC522_Init()
 
     def close(self) -> Self:
@@ -44,8 +43,8 @@ class RFIDReader():
             print("readerid " + readerID + " not found")
             return False
 
-        for loop_id in self.boards:
-            GPIO.output(self.boards[loop_id], loop_id == readerID)
+        for reader in self.boards:
+            GPIO.setup(self.boards[reader], GPIO.OUT)
         return True
 
     def read(self, readerID) -> Self:
@@ -62,9 +61,10 @@ def main():
     # refer to pins by "GPIO"-numbers on the board
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
-    cardsInPlace = False
 
+    cardsInPlace = False
     rfidReader = RFIDReader()
+
     for r in readers:
         rfidReader.addBoard(r[0], r[1])
 
