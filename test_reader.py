@@ -1,14 +1,12 @@
 from time import sleep
-import RPi.GPIO as GPIO
-from mfrc522 import SimpleMFRC522
-reader = SimpleMFRC522()
+import RPI.GPIO as GPIO
+from mfrc522 import MFRC522
 
-try:
-    while True:
-        print("Hold a tag near the reader")
-        id, text = reader.read()
-        print("ID: %s\nText: %s" % (id,text))
-        sleep(5)
-except KeyboardInterrupt:
-    GPIO.cleanup()
-    raise
+reader = MFRC522()
+
+status =  None
+while status != reader.MI_OK:
+	(status, TagType) = reader.Request(reader.PICC_REQIDL)
+	if status == reader.MI_OK:
+		print("Connection Success!")
+GPIO.cleanup()
