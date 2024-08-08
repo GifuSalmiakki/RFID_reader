@@ -9,8 +9,8 @@ import time
 # since that's the only thing we're concerned with
 cardsRead = {}
 CARD_AMOUNT = 1
-GPIO_READER1 = 24
-GPIO_READER2 = 25
+GPIO_READER1 = 5
+GPIO_READER2 = 6
 readers = [("reader1", GPIO_READER1), ("reader2", GPIO_READER2)]
 
 for card in range(CARD_AMOUNT):
@@ -37,20 +37,20 @@ class RFIDReader():
 
     def addBoard(self, readerID, pin) -> Self:
         self.boards[readerID] = pin
+        GPIO.setup(pin, GPIO.OUT)
 
     def selectBoard(self, readerID) -> Self:
         if not readerID in self.boards:
             print("readerid " + readerID + " not found")
             return False
-
-        for reader in self.boards:
-            GPIO.setup(self.boards[reader], GPIO.OUT)
+        for loop_id in self.boards:
+            GPIO.output(self.boards[loop_id], loop_id == readerID)
         return True
 
     def read(self, readerID) -> Self:
+
         if not self.selectBoard(readerID):
             return None
-
         self.reinit()
         cardID, data = self.reader.read_no_block()
         self.close()
@@ -64,7 +64,7 @@ def main():
 
     cardsInPlace = False
     rfidReader = RFIDReader()
-
+    GPIO.setup(8, GPIO.OUT)
     for r in readers:
         rfidReader.addBoard(r[0], r[1])
 
