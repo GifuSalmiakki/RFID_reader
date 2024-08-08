@@ -1,7 +1,9 @@
 import RPi.GPIO as GPIO
 from mfrc522 import SimpleMFRC522
+import spidev
+import signal
 from typing import Self
-import time
+from itertools import groupby
 
 CARD_AMOUNT = 1
 GPIO_READER1 = 25
@@ -35,10 +37,7 @@ def main():
 
         if cardInPlace:
             print("Card in place :)")
-            cardsInPlace = True
 
-        time.sleep(1)
-        
     GPIO.cleanup()
 
 if __name__ == "__main__":
