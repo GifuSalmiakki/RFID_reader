@@ -9,8 +9,8 @@ import time
 # since that's the only thing we're concerned with
 cardsRead = {}
 CARD_AMOUNT = 1
-GPIO_READER1 = 23
-GPIO_READER2 = 24
+GPIO_READER1 = 24
+GPIO_READER2 = 25
 readers = [("reader1", GPIO_READER1), ("reader2", GPIO_READER2)]
 
 for card in range(CARD_AMOUNT):
