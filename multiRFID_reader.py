@@ -2,14 +2,18 @@ import RPi.GPIO as GPIO
 from mfrc522 import SimpleMFRC522
 import spidev
 from typing import Self
-from itertools import groupby
 import time
-from PIL import Image
 
-CARD_AMOUNT = 2
+CARD_AMOUNT = 5
+
 GPIO_READER1 = 5
 GPIO_READER2 = 6
-readers = [("reader1", GPIO_READER1), ("reader2", GPIO_READER2)]
+GPIO_READER3 = 22
+GPIO_READER4 = 26
+GPIO_READER5 = 27
+readers = [("reader1", GPIO_READER1), ("reader2", GPIO_READER2),
+           ("reader3", GPIO_READER3), ("reader4", GPIO_READER4),
+           ("reader5", GPIO_READER5)]
 
 class RFIDReader():
     def __init__(self, bus=0, device=0, speed=1000000) -> Self:
@@ -68,19 +72,19 @@ def main():
     # reading each reader one at a time
     while not cardsInPlace:
 
-        bothCardsRead = 0
+        allCardsRead = 0
         for r in readers:
             try:
                 cardID = rfidReader.read(r[0])
                 if cardID != None:
-                    print("Card "+str(cardID)+" read")
+                    print("Card "+str(cardID)+" from reader "+str(r)+" read")
                     # card was read, set corresponding value to True
-                    bothCardsRead += 1
+                    allCardsRead += 1
             except Exception as exception:
                 print("Execption: "+ str(exception))
 
         # all cards read on one pass, all cards in place
-        if bothCardsRead == 2:
+        if allCardsRead == CARD_AMOUNT:
             cardsInPlace = True
             print("All cards in place! :)")
 
