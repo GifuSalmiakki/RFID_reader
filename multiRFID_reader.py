@@ -20,7 +20,6 @@ class RFIDReader():
         self.reader = SimpleMFRC522()
         self.close()
         self.boards = {}
-
         self.bus = bus
         self.device = device
         self.speed = speed
